@@ -1,0 +1,2 @@
+void register_skeleton_modifications_types();
+void unregister_skeleton_modifications_types();
