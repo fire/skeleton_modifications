@@ -1,54 +1,34 @@
 #include "fabrik.h"
 
-
 ///////////////////////////////////////
 // FABRIK
 ///////////////////////////////////////
 
-bool SkeletonModification3DFABRIK::_set(const StringName &p_path, const Variant &p_value)
-{
+bool SkeletonModification3DFABRIK::_set(const StringName &p_path, const Variant &p_value) {
 	String path = p_path;
 
-	if (path.begins_with("joint_data/"))
-	{
+	if (path.begins_with("joint_data/")) {
 		int which = path.get_slicec('/', 1).to_int();
 		String what = path.get_slicec('/', 2);
 		ERR_FAIL_INDEX_V(which, fabrik_data_chain.size(), false);
 
-		if (what == "bone_name")
-		{
+		if (what == "bone_name") {
 			set_fabrik_joint_bone_name(which, p_value);
-		}
-		else if (what == "bone_index")
-		{
+		} else if (what == "bone_index") {
 			set_fabrik_joint_bone_index(which, p_value);
-		}
-		else if (what == "length")
-		{
+		} else if (what == "length") {
 			set_fabrik_joint_length(which, p_value);
-		}
-		else if (what == "magnet_position")
-		{
+		} else if (what == "magnet_position") {
 			set_fabrik_joint_magnet(which, p_value);
-		}
-		else if (what == "auto_calculate_length")
-		{
+		} else if (what == "auto_calculate_length") {
 			set_fabrik_joint_auto_calculate_length(which, p_value);
-		}
-		else if (what == "use_tip_node")
-		{
+		} else if (what == "use_tip_node") {
 			set_fabrik_joint_use_tip_node(which, p_value);
-		}
-		else if (what == "tip_node")
-		{
+		} else if (what == "tip_node") {
 			set_fabrik_joint_tip_node(which, p_value);
-		}
-		else if (what == "use_target_basis")
-		{
+		} else if (what == "use_target_basis") {
 			set_fabrik_joint_use_target_basis(which, p_value);
-		}
-		else if (what == "roll")
-		{
+		} else if (what == "roll") {
 			set_fabrik_joint_roll(which, Math::deg2rad(float(p_value)));
 		}
 		return true;
@@ -56,50 +36,31 @@ bool SkeletonModification3DFABRIK::_set(const StringName &p_path, const Variant 
 	return true;
 }
 
-bool SkeletonModification3DFABRIK::_get(const StringName &p_path, Variant &r_ret) const
-{
+bool SkeletonModification3DFABRIK::_get(const StringName &p_path, Variant &r_ret) const {
 	String path = p_path;
 
-	if (path.begins_with("joint_data/"))
-	{
+	if (path.begins_with("joint_data/")) {
 		int which = path.get_slicec('/', 1).to_int();
 		String what = path.get_slicec('/', 2);
 		ERR_FAIL_INDEX_V(which, fabrik_data_chain.size(), false);
 
-		if (what == "bone_name")
-		{
+		if (what == "bone_name") {
 			r_ret = get_fabrik_joint_bone_name(which);
-		}
-		else if (what == "bone_index")
-		{
+		} else if (what == "bone_index") {
 			r_ret = get_fabrik_joint_bone_index(which);
-		}
-		else if (what == "length")
-		{
+		} else if (what == "length") {
 			r_ret = get_fabrik_joint_length(which);
-		}
-		else if (what == "magnet_position")
-		{
+		} else if (what == "magnet_position") {
 			r_ret = get_fabrik_joint_magnet(which);
-		}
-		else if (what == "auto_calculate_length")
-		{
+		} else if (what == "auto_calculate_length") {
 			r_ret = get_fabrik_joint_auto_calculate_length(which);
-		}
-		else if (what == "use_tip_node")
-		{
+		} else if (what == "use_tip_node") {
 			r_ret = get_fabrik_joint_use_tip_node(which);
-		}
-		else if (what == "tip_node")
-		{
+		} else if (what == "tip_node") {
 			r_ret = get_fabrik_joint_tip_node(which);
-		}
-		else if (what == "use_target_basis")
-		{
+		} else if (what == "use_target_basis") {
 			r_ret = get_fabrik_joint_use_target_basis(which);
-		}
-		else if (what == "roll")
-		{
+		} else if (what == "roll") {
 			r_ret = Math::rad2deg(get_fabrik_joint_roll(which));
 		}
 		return true;
@@ -107,10 +68,8 @@ bool SkeletonModification3DFABRIK::_get(const StringName &p_path, Variant &r_ret
 	return true;
 }
 
-void SkeletonModification3DFABRIK::_get_property_list(List<PropertyInfo> *p_list) const
-{
-	for (int i = 0; i < fabrik_data_chain.size(); i++)
-	{
+void SkeletonModification3DFABRIK::_get_property_list(List<PropertyInfo> *p_list) const {
+	for (int i = 0; i < fabrik_data_chain.size(); i++) {
 		String base_string = "joint_data/" + itos(i) + "/";
 
 		p_list->push_back(PropertyInfo(Variant::STRING_NAME, base_string + "bone_name", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
@@ -118,88 +77,70 @@ void SkeletonModification3DFABRIK::_get_property_list(List<PropertyInfo> *p_list
 		p_list->push_back(PropertyInfo(Variant::FLOAT, base_string + "roll", PROPERTY_HINT_RANGE, "-360,360,0.01", PROPERTY_USAGE_DEFAULT));
 		p_list->push_back(PropertyInfo(Variant::BOOL, base_string + "auto_calculate_length", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 
-		if (!fabrik_data_chain[i].auto_calculate_length)
-		{
+		if (!fabrik_data_chain[i].auto_calculate_length) {
 			p_list->push_back(PropertyInfo(Variant::FLOAT, base_string + "length", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
-		}
-		else
-		{
+		} else {
 			p_list->push_back(PropertyInfo(Variant::BOOL, base_string + "use_tip_node", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
-			if (fabrik_data_chain[i].use_tip_node)
-			{
+			if (fabrik_data_chain[i].use_tip_node) {
 				p_list->push_back(PropertyInfo(Variant::NODE_PATH, base_string + "tip_node", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Node3D", PROPERTY_USAGE_DEFAULT));
 			}
 		}
 
 		// Cannot apply magnet to the origin of the chain, as it will not do anything.
-		if (i > 0)
-		{
+		if (i > 0) {
 			p_list->push_back(PropertyInfo(Variant::VECTOR3, base_string + "magnet_position", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 		}
 		// Only give the override basis option on the last bone in the chain, so only include it for the last bone.
-		if (i == fabrik_data_chain.size() - 1)
-		{
+		if (i == fabrik_data_chain.size() - 1) {
 			p_list->push_back(PropertyInfo(Variant::BOOL, base_string + "use_target_basis", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 		}
 	}
 }
 
-void SkeletonModification3DFABRIK::execute(float delta)
-{
+void SkeletonModification3DFABRIK::execute(float delta) {
 	ERR_FAIL_COND_MSG(!stack || !is_setup || stack->skeleton == nullptr,
-					  "Modification is not setup and therefore cannot execute!");
-	if (!enabled)
-	{
+			"Modification is not setup and therefore cannot execute!");
+	if (!enabled) {
 		return;
 	}
 
-	if (target_node_cache.is_null())
-	{
+	if (target_node_cache.is_null()) {
 		_print_execution_error(true, "Target cache is out of date. Attempting to update...");
 		update_target_cache();
 		return;
 	}
 
-	if (_print_execution_error(fabrik_data_chain.size() <= 1, "FABRIK requires at least two joints to operate. Cannot execute modification!"))
-	{
+	if (_print_execution_error(fabrik_data_chain.size() <= 1, "FABRIK requires at least two joints to operate. Cannot execute modification!")) {
 		return;
 	}
 
 	Node3D *node_target = Object::cast_to<Node3D>(ObjectDB::get_instance(target_node_cache));
-	if (_print_execution_error(!node_target || !node_target->is_inside_tree(), "Target node is not in the scene tree. Cannot execute modification!"))
-	{
+	if (_print_execution_error(!node_target || !node_target->is_inside_tree(), "Target node is not in the scene tree. Cannot execute modification!")) {
 		return;
 	}
 
 	// Verify that all joints have a valid bone ID, and that all bone lengths are zero or more
 	// Also, while we are here, apply magnet positions.
-	for (int i = 0; i < fabrik_data_chain.size(); i++)
-	{
-		if (_print_execution_error(fabrik_data_chain[i].bone_idx < 0, "FABRIK Joint " + itos(i) + " has an invalid bone ID. Cannot execute!"))
-		{
+	for (int i = 0; i < fabrik_data_chain.size(); i++) {
+		if (_print_execution_error(fabrik_data_chain[i].bone_idx < 0, "FABRIK Joint " + itos(i) + " has an invalid bone ID. Cannot execute!")) {
 			return;
 		}
 
-		if (fabrik_data_chain[i].length < 0 && fabrik_data_chain[i].auto_calculate_length)
-		{
+		if (fabrik_data_chain[i].length < 0 && fabrik_data_chain[i].auto_calculate_length) {
 			fabrik_joint_auto_calculate_length(i);
 		}
-		if (_print_execution_error(fabrik_data_chain[i].length < 0, "FABRIK Joint " + itos(i) + " has an invalid joint length. Cannot execute!"))
-		{
+		if (_print_execution_error(fabrik_data_chain[i].length < 0, "FABRIK Joint " + itos(i) + " has an invalid joint length. Cannot execute!")) {
 			return;
 		}
 
 		Transform local_pose_override = stack->skeleton->get_bone_local_pose_override(fabrik_data_chain[i].bone_idx);
 
 		// Apply magnet positions:
-		if (stack->skeleton->get_bone_parent(fabrik_data_chain[i].bone_idx) >= 0)
-		{
+		if (stack->skeleton->get_bone_parent(fabrik_data_chain[i].bone_idx) >= 0) {
 			int parent_bone_idx = stack->skeleton->get_bone_parent(fabrik_data_chain[i].bone_idx);
 			Transform conversion_transform = (stack->skeleton->get_bone_global_pose(parent_bone_idx) * stack->skeleton->get_bone_rest(parent_bone_idx));
 			local_pose_override.origin += conversion_transform.basis.xform_inv(fabrik_data_chain[i].magnet_position);
-		}
-		else
-		{
+		} else {
 			local_pose_override.origin += fabrik_data_chain[i].magnet_position;
 		}
 
@@ -208,14 +149,13 @@ void SkeletonModification3DFABRIK::execute(float delta)
 
 	target_global_pose = stack->skeleton->world_transform_to_global_pose(node_target->get_global_transform());
 	origin_global_pose = stack->skeleton->local_pose_to_global_pose(
-		fabrik_data_chain[0].bone_idx, stack->skeleton->get_bone_local_pose_override(fabrik_data_chain[0].bone_idx));
+			fabrik_data_chain[0].bone_idx, stack->skeleton->get_bone_local_pose_override(fabrik_data_chain[0].bone_idx));
 
 	final_joint_idx = fabrik_data_chain.size() - 1;
 	float target_distance = stack->skeleton->global_pose_to_local_pose(fabrik_data_chain[final_joint_idx].bone_idx, target_global_pose).origin.length();
 	chain_iterations = 0;
 
-	while (target_distance > chain_tolerance)
-	{
+	while (target_distance > chain_tolerance) {
 		chain_backwards();
 		chain_forwards();
 
@@ -224,8 +164,7 @@ void SkeletonModification3DFABRIK::execute(float delta)
 
 		// update chain iterations
 		chain_iterations += 1;
-		if (chain_iterations >= chain_max_iterations)
-		{
+		if (chain_iterations >= chain_max_iterations) {
 			break;
 		}
 	}
@@ -234,8 +173,7 @@ void SkeletonModification3DFABRIK::execute(float delta)
 	execution_error_found = false;
 }
 
-void SkeletonModification3DFABRIK::chain_backwards()
-{
+void SkeletonModification3DFABRIK::chain_backwards() {
 	int final_bone_idx = fabrik_data_chain[final_joint_idx].bone_idx;
 	Transform final_joint_trans = stack->skeleton->local_pose_to_global_pose(final_bone_idx, stack->skeleton->get_bone_local_pose_override(final_bone_idx));
 
@@ -246,8 +184,7 @@ void SkeletonModification3DFABRIK::chain_backwards()
 	Vector3 direction = final_bone_direction_trans.basis.xform(stack->skeleton->get_bone_axis_forward_vector(final_bone_idx)).normalized();
 
 	// If set to override, then use the target's Basis rather than the bone's
-	if (fabrik_data_chain[final_joint_idx].use_target_basis)
-	{
+	if (fabrik_data_chain[final_joint_idx].use_target_basis) {
 		direction = target_global_pose.basis.xform(stack->skeleton->get_bone_axis_forward_vector(final_bone_idx)).normalized();
 	}
 
@@ -258,8 +195,7 @@ void SkeletonModification3DFABRIK::chain_backwards()
 
 	// for all other joints, move them towards the target
 	int i = final_joint_idx;
-	while (i >= 1)
-	{
+	while (i >= 1) {
 		int next_bone_idx = fabrik_data_chain[i].bone_idx;
 		Transform next_bone_trans = stack->skeleton->local_pose_to_global_pose(next_bone_idx, stack->skeleton->get_bone_local_pose_override(next_bone_idx));
 		i -= 1;
@@ -274,16 +210,14 @@ void SkeletonModification3DFABRIK::chain_backwards()
 	}
 }
 
-void SkeletonModification3DFABRIK::chain_forwards()
-{
+void SkeletonModification3DFABRIK::chain_forwards() {
 	// Set root at the initial position.
 	int origin_bone_idx = fabrik_data_chain[0].bone_idx;
 	Transform root_transform = stack->skeleton->local_pose_to_global_pose(origin_bone_idx, stack->skeleton->get_bone_local_pose_override(origin_bone_idx));
 	root_transform.origin = origin_global_pose.origin;
 	stack->skeleton->set_bone_local_pose_override(origin_bone_idx, stack->skeleton->global_pose_to_local_pose(origin_bone_idx, root_transform), stack->strength, true);
 
-	for (int i = 0; i < fabrik_data_chain.size() - 1; i++)
-	{
+	for (int i = 0; i < fabrik_data_chain.size() - 1; i++) {
 		int current_bone_idx = fabrik_data_chain[i].bone_idx;
 		Transform current_trans = stack->skeleton->local_pose_to_global_pose(current_bone_idx, stack->skeleton->get_bone_local_pose_override(current_bone_idx));
 		int next_bone_idx = fabrik_data_chain[i + 1].bone_idx;
@@ -297,33 +231,25 @@ void SkeletonModification3DFABRIK::chain_forwards()
 	}
 }
 
-void SkeletonModification3DFABRIK::chain_apply()
-{
-	for (int i = 0; i < fabrik_data_chain.size(); i++)
-	{
+void SkeletonModification3DFABRIK::chain_apply() {
+	for (int i = 0; i < fabrik_data_chain.size(); i++) {
 		int current_bone_idx = fabrik_data_chain[i].bone_idx;
 		Transform current_trans = stack->skeleton->get_bone_local_pose_override(current_bone_idx);
 		current_trans = stack->skeleton->local_pose_to_global_pose(current_bone_idx, current_trans);
 
 		// If this is the last bone in the chain...
-		if (i == fabrik_data_chain.size() - 1)
-		{
-			if (fabrik_data_chain[i].use_target_basis == false)
-			{ // Point to target...
+		if (i == fabrik_data_chain.size() - 1) {
+			if (fabrik_data_chain[i].use_target_basis == false) { // Point to target...
 				// Get the forward direction that the basis is facing in right now.
 				stack->skeleton->update_bone_rest_forward_vector(current_bone_idx);
 				Vector3 forward_vector = stack->skeleton->get_bone_axis_forward_vector(current_bone_idx);
 				// Rotate the bone towards the target:
 				current_trans.basis.rotate_to_align(forward_vector, current_trans.origin.direction_to(target_global_pose.origin));
 				current_trans.basis.rotate_local(forward_vector, fabrik_data_chain[i].roll);
-			}
-			else
-			{ // Use the target's Basis...
+			} else { // Use the target's Basis...
 				current_trans.basis = target_global_pose.basis.orthonormalized().scaled(current_trans.basis.get_scale());
 			}
-		}
-		else
-		{ // every other bone in the chain...
+		} else { // every other bone in the chain...
 			int next_bone_idx = fabrik_data_chain[i + 1].bone_idx;
 			Transform next_trans = stack->skeleton->local_pose_to_global_pose(next_bone_idx, stack->skeleton->get_bone_local_pose_override(next_bone_idx));
 
@@ -343,41 +269,33 @@ void SkeletonModification3DFABRIK::chain_apply()
 	stack->skeleton->force_update_all_bone_transforms();
 }
 
-void SkeletonModification3DFABRIK::setup_modification(SkeletonModificationStack3D *p_stack)
-{
+void SkeletonModification3DFABRIK::setup_modification(SkeletonModificationStack3D *p_stack) {
 	stack = p_stack;
-	if (stack != nullptr)
-	{
+	if (stack != nullptr) {
 		is_setup = true;
 		execution_error_found = false;
 		update_target_cache();
 
-		for (int i = 0; i < fabrik_data_chain.size(); i++)
-		{
+		for (int i = 0; i < fabrik_data_chain.size(); i++) {
 			update_joint_tip_cache(i);
 		}
 	}
 }
 
-void SkeletonModification3DFABRIK::update_target_cache()
-{
-	if (!is_setup || !stack)
-	{
+void SkeletonModification3DFABRIK::update_target_cache() {
+	if (!is_setup || !stack) {
 		_print_execution_error(true, "Cannot update target cache: modification is not properly setup!");
 		return;
 	}
 	target_node_cache = ObjectID();
-	if (stack->skeleton)
-	{
-		if (stack->skeleton->is_inside_tree() && target_node.is_empty() == false)
-		{
-			if (stack->skeleton->has_node(target_node))
-			{
+	if (stack->skeleton) {
+		if (stack->skeleton->is_inside_tree() && target_node.is_empty() == false) {
+			if (stack->skeleton->has_node(target_node)) {
 				Node *node = stack->skeleton->get_node(target_node);
 				ERR_FAIL_COND_MSG(!node || stack->skeleton == node,
-								  "Cannot update target cache: node is this modification's skeleton or cannot be found!");
+						"Cannot update target cache: node is this modification's skeleton or cannot be found!");
 				ERR_FAIL_COND_MSG(!node->is_inside_tree(),
-								  "Cannot update target cache: node is not in the scene tree!");
+						"Cannot update target cache: node is not in the scene tree!");
 				target_node_cache = node->get_instance_id();
 
 				execution_error_found = false;
@@ -386,26 +304,21 @@ void SkeletonModification3DFABRIK::update_target_cache()
 	}
 }
 
-void SkeletonModification3DFABRIK::update_joint_tip_cache(int p_joint_idx)
-{
+void SkeletonModification3DFABRIK::update_joint_tip_cache(int p_joint_idx) {
 	ERR_FAIL_INDEX_MSG(p_joint_idx, fabrik_data_chain.size(), "FABRIK joint not found");
-	if (!is_setup || !stack)
-	{
+	if (!is_setup || !stack) {
 		_print_execution_error(true, "Cannot update tip cache: modification is not properly setup!");
 		return;
 	}
 	fabrik_data_chain.write[p_joint_idx].tip_node_cache = ObjectID();
-	if (stack->skeleton)
-	{
-		if (stack->skeleton->is_inside_tree() && fabrik_data_chain[p_joint_idx].tip_node.is_empty() == false)
-		{
-			if (stack->skeleton->has_node(fabrik_data_chain[p_joint_idx].tip_node))
-			{
+	if (stack->skeleton) {
+		if (stack->skeleton->is_inside_tree() && fabrik_data_chain[p_joint_idx].tip_node.is_empty() == false) {
+			if (stack->skeleton->has_node(fabrik_data_chain[p_joint_idx].tip_node)) {
 				Node *node = stack->skeleton->get_node(fabrik_data_chain[p_joint_idx].tip_node);
 				ERR_FAIL_COND_MSG(!node || stack->skeleton == node,
-								  "Cannot update tip cache for joint " + itos(p_joint_idx) + ": node is this modification's skeleton or cannot be found!");
+						"Cannot update tip cache for joint " + itos(p_joint_idx) + ": node is this modification's skeleton or cannot be found!");
 				ERR_FAIL_COND_MSG(!node->is_inside_tree(),
-								  "Cannot update tip cache for joint " + itos(p_joint_idx) + ": node is not in scene tree!");
+						"Cannot update tip cache for joint " + itos(p_joint_idx) + ": node is not in scene tree!");
 				fabrik_data_chain.write[p_joint_idx].tip_node_cache = node->get_instance_id();
 
 				execution_error_found = false;
@@ -414,167 +327,137 @@ void SkeletonModification3DFABRIK::update_joint_tip_cache(int p_joint_idx)
 	}
 }
 
-void SkeletonModification3DFABRIK::set_target_node(const NodePath &p_target_node)
-{
+void SkeletonModification3DFABRIK::set_target_node(const NodePath &p_target_node) {
 	target_node = p_target_node;
 	update_target_cache();
 }
 
-NodePath SkeletonModification3DFABRIK::get_target_node() const
-{
+NodePath SkeletonModification3DFABRIK::get_target_node() const {
 	return target_node;
 }
 
-int SkeletonModification3DFABRIK::get_fabrik_data_chain_length()
-{
+int SkeletonModification3DFABRIK::get_fabrik_data_chain_length() {
 	return fabrik_data_chain.size();
 }
 
-void SkeletonModification3DFABRIK::set_fabrik_data_chain_length(int p_length)
-{
+void SkeletonModification3DFABRIK::set_fabrik_data_chain_length(int p_length) {
 	ERR_FAIL_COND(p_length < 0);
 	fabrik_data_chain.resize(p_length);
 	execution_error_found = false;
 }
 
-float SkeletonModification3DFABRIK::get_chain_tolerance()
-{
+float SkeletonModification3DFABRIK::get_chain_tolerance() {
 	return chain_tolerance;
 }
 
-void SkeletonModification3DFABRIK::set_chain_tolerance(float p_tolerance)
-{
+void SkeletonModification3DFABRIK::set_chain_tolerance(float p_tolerance) {
 	ERR_FAIL_COND_MSG(p_tolerance <= 0, "FABRIK chain tolerance must be more than zero!");
 	chain_tolerance = p_tolerance;
 }
 
-int SkeletonModification3DFABRIK::get_chain_max_iterations()
-{
+int SkeletonModification3DFABRIK::get_chain_max_iterations() {
 	return chain_max_iterations;
 }
-void SkeletonModification3DFABRIK::set_chain_max_iterations(int p_iterations)
-{
+void SkeletonModification3DFABRIK::set_chain_max_iterations(int p_iterations) {
 	ERR_FAIL_COND_MSG(p_iterations <= 0, "FABRIK chain iterations must be at least one. Set enabled to false to disable the FABRIK chain.");
 	chain_max_iterations = p_iterations;
 }
 
 // FABRIK joint data functions
-String SkeletonModification3DFABRIK::get_fabrik_joint_bone_name(int p_joint_idx) const
-{
+String SkeletonModification3DFABRIK::get_fabrik_joint_bone_name(int p_joint_idx) const {
 	ERR_FAIL_INDEX_V(p_joint_idx, fabrik_data_chain.size(), String());
 	return fabrik_data_chain[p_joint_idx].bone_name;
 }
 
-void SkeletonModification3DFABRIK::set_fabrik_joint_bone_name(int p_joint_idx, String p_bone_name)
-{
+void SkeletonModification3DFABRIK::set_fabrik_joint_bone_name(int p_joint_idx, String p_bone_name) {
 	ERR_FAIL_INDEX(p_joint_idx, fabrik_data_chain.size());
 	fabrik_data_chain.write[p_joint_idx].bone_name = p_bone_name;
 
-	if (stack)
-	{
-		if (stack->skeleton)
-		{
+	if (stack) {
+		if (stack->skeleton) {
 			fabrik_data_chain.write[p_joint_idx].bone_idx = stack->skeleton->find_bone(p_bone_name);
 		}
 	}
 	execution_error_found = false;
 }
 
-int SkeletonModification3DFABRIK::get_fabrik_joint_bone_index(int p_joint_idx) const
-{
+int SkeletonModification3DFABRIK::get_fabrik_joint_bone_index(int p_joint_idx) const {
 	ERR_FAIL_INDEX_V(p_joint_idx, fabrik_data_chain.size(), -1);
 	return fabrik_data_chain[p_joint_idx].bone_idx;
 }
 
-void SkeletonModification3DFABRIK::set_fabrik_joint_bone_index(int p_joint_idx, int p_bone_idx)
-{
+void SkeletonModification3DFABRIK::set_fabrik_joint_bone_index(int p_joint_idx, int p_bone_idx) {
 	ERR_FAIL_INDEX(p_joint_idx, fabrik_data_chain.size());
 	ERR_FAIL_COND_MSG(p_bone_idx < 0, "Bone index is out of range: The index is too low!");
 	fabrik_data_chain.write[p_joint_idx].bone_idx = p_bone_idx;
 
-	if (stack)
-	{
-		if (stack->skeleton)
-		{
+	if (stack) {
+		if (stack->skeleton) {
 			fabrik_data_chain.write[p_joint_idx].bone_name = stack->skeleton->get_bone_name(p_bone_idx);
 		}
 	}
 	execution_error_found = false;
 }
 
-float SkeletonModification3DFABRIK::get_fabrik_joint_length(int p_joint_idx) const
-{
+float SkeletonModification3DFABRIK::get_fabrik_joint_length(int p_joint_idx) const {
 	ERR_FAIL_INDEX_V(p_joint_idx, fabrik_data_chain.size(), -1);
 	return fabrik_data_chain[p_joint_idx].length;
 }
 
-void SkeletonModification3DFABRIK::set_fabrik_joint_length(int p_joint_idx, float p_bone_length)
-{
+void SkeletonModification3DFABRIK::set_fabrik_joint_length(int p_joint_idx, float p_bone_length) {
 	ERR_FAIL_INDEX(p_joint_idx, fabrik_data_chain.size());
 	ERR_FAIL_COND_MSG(p_bone_length < 0, "FABRIK joint length cannot be less than zero!");
 
-	if (!is_setup)
-	{
+	if (!is_setup) {
 		fabrik_data_chain.write[p_joint_idx].length = p_bone_length;
 		return;
 	}
 
-	if (fabrik_data_chain[p_joint_idx].auto_calculate_length)
-	{
+	if (fabrik_data_chain[p_joint_idx].auto_calculate_length) {
 		WARN_PRINT("FABRIK Length not set: auto calculate length is enabled for this joint!");
 		fabrik_joint_auto_calculate_length(p_joint_idx);
-	}
-	else
-	{
+	} else {
 		fabrik_data_chain.write[p_joint_idx].length = p_bone_length;
 	}
 
 	execution_error_found = false;
 }
 
-Vector3 SkeletonModification3DFABRIK::get_fabrik_joint_magnet(int p_joint_idx) const
-{
+Vector3 SkeletonModification3DFABRIK::get_fabrik_joint_magnet(int p_joint_idx) const {
 	ERR_FAIL_INDEX_V(p_joint_idx, fabrik_data_chain.size(), Vector3());
 	return fabrik_data_chain[p_joint_idx].magnet_position;
 }
 
-void SkeletonModification3DFABRIK::set_fabrik_joint_magnet(int p_joint_idx, Vector3 p_magnet)
-{
+void SkeletonModification3DFABRIK::set_fabrik_joint_magnet(int p_joint_idx, Vector3 p_magnet) {
 	ERR_FAIL_INDEX(p_joint_idx, fabrik_data_chain.size());
 	fabrik_data_chain.write[p_joint_idx].magnet_position = p_magnet;
 }
 
-bool SkeletonModification3DFABRIK::get_fabrik_joint_auto_calculate_length(int p_joint_idx) const
-{
+bool SkeletonModification3DFABRIK::get_fabrik_joint_auto_calculate_length(int p_joint_idx) const {
 	ERR_FAIL_INDEX_V(p_joint_idx, fabrik_data_chain.size(), false);
 	return fabrik_data_chain[p_joint_idx].auto_calculate_length;
 }
 
-void SkeletonModification3DFABRIK::set_fabrik_joint_auto_calculate_length(int p_joint_idx, bool p_auto_calculate)
-{
+void SkeletonModification3DFABRIK::set_fabrik_joint_auto_calculate_length(int p_joint_idx, bool p_auto_calculate) {
 	ERR_FAIL_INDEX(p_joint_idx, fabrik_data_chain.size());
 	fabrik_data_chain.write[p_joint_idx].auto_calculate_length = p_auto_calculate;
 	fabrik_joint_auto_calculate_length(p_joint_idx);
 }
 
-void SkeletonModification3DFABRIK::fabrik_joint_auto_calculate_length(int p_joint_idx)
-{
+void SkeletonModification3DFABRIK::fabrik_joint_auto_calculate_length(int p_joint_idx) {
 	ERR_FAIL_INDEX(p_joint_idx, fabrik_data_chain.size());
-	if (!fabrik_data_chain[p_joint_idx].auto_calculate_length)
-	{
+	if (!fabrik_data_chain[p_joint_idx].auto_calculate_length) {
 		return;
 	}
 
-	if (!stack || !stack->skeleton || !is_setup)
-	{
+	if (!stack || !stack->skeleton || !is_setup) {
 		_print_execution_error(true, "Cannot auto calculate joint length: modification is not properly setup!");
 		return;
 	}
 	ERR_FAIL_INDEX_MSG(fabrik_data_chain[p_joint_idx].bone_idx, stack->skeleton->get_bone_count(),
-					   "Bone for joint " + itos(p_joint_idx) + " is not set or points to an unknown bone!");
+			"Bone for joint " + itos(p_joint_idx) + " is not set or points to an unknown bone!");
 
-	if (fabrik_data_chain[p_joint_idx].use_tip_node)
-	{ // Use the tip node to update joint length.
+	if (fabrik_data_chain[p_joint_idx].use_tip_node) { // Use the tip node to update joint length.
 
 		update_joint_tip_cache(p_joint_idx);
 
@@ -586,19 +469,15 @@ void SkeletonModification3DFABRIK::fabrik_joint_auto_calculate_length(int p_join
 		node_trans = stack->skeleton->world_transform_to_global_pose(node_trans);
 		node_trans = stack->skeleton->global_pose_to_local_pose(fabrik_data_chain[p_joint_idx].bone_idx, node_trans);
 		fabrik_data_chain.write[p_joint_idx].length = node_trans.origin.length();
-	}
-	else
-	{ // Use child bone(s) to update joint length, if possible
+	} else { // Use child bone(s) to update joint length, if possible
 		Vector<int> bone_children = stack->skeleton->get_bone_children(fabrik_data_chain[p_joint_idx].bone_idx);
-		if (bone_children.size() <= 0)
-		{
+		if (bone_children.size() <= 0) {
 			ERR_FAIL_MSG("Cannot calculate length for joint " + itos(p_joint_idx) + "joint uses leaf bone. \nPlease manually set the bone length or use a tip node!");
 			return;
 		}
 
 		float final_length = 0;
-		for (int i = 0; i < bone_children.size(); i++)
-		{
+		for (int i = 0; i < bone_children.size(); i++) {
 			Transform child_transform = stack->skeleton->get_bone_global_pose(bone_children[i]);
 			final_length += stack->skeleton->global_pose_to_local_pose(fabrik_data_chain[p_joint_idx].bone_idx, child_transform).origin.length();
 		}
@@ -607,57 +486,48 @@ void SkeletonModification3DFABRIK::fabrik_joint_auto_calculate_length(int p_join
 	execution_error_found = false;
 }
 
-bool SkeletonModification3DFABRIK::get_fabrik_joint_use_tip_node(int p_joint_idx) const
-{
+bool SkeletonModification3DFABRIK::get_fabrik_joint_use_tip_node(int p_joint_idx) const {
 	ERR_FAIL_INDEX_V(p_joint_idx, fabrik_data_chain.size(), false);
 	return fabrik_data_chain[p_joint_idx].use_tip_node;
 }
 
-void SkeletonModification3DFABRIK::set_fabrik_joint_use_tip_node(int p_joint_idx, bool p_use_tip_node)
-{
+void SkeletonModification3DFABRIK::set_fabrik_joint_use_tip_node(int p_joint_idx, bool p_use_tip_node) {
 	ERR_FAIL_INDEX(p_joint_idx, fabrik_data_chain.size());
 	fabrik_data_chain.write[p_joint_idx].use_tip_node = p_use_tip_node;
 }
 
-NodePath SkeletonModification3DFABRIK::get_fabrik_joint_tip_node(int p_joint_idx) const
-{
+NodePath SkeletonModification3DFABRIK::get_fabrik_joint_tip_node(int p_joint_idx) const {
 	ERR_FAIL_INDEX_V(p_joint_idx, fabrik_data_chain.size(), NodePath());
 	return fabrik_data_chain[p_joint_idx].tip_node;
 }
 
-void SkeletonModification3DFABRIK::set_fabrik_joint_tip_node(int p_joint_idx, NodePath p_tip_node)
-{
+void SkeletonModification3DFABRIK::set_fabrik_joint_tip_node(int p_joint_idx, NodePath p_tip_node) {
 	ERR_FAIL_INDEX(p_joint_idx, fabrik_data_chain.size());
 	fabrik_data_chain.write[p_joint_idx].tip_node = p_tip_node;
 	update_joint_tip_cache(p_joint_idx);
 }
 
-bool SkeletonModification3DFABRIK::get_fabrik_joint_use_target_basis(int p_joint_idx) const
-{
+bool SkeletonModification3DFABRIK::get_fabrik_joint_use_target_basis(int p_joint_idx) const {
 	ERR_FAIL_INDEX_V(p_joint_idx, fabrik_data_chain.size(), false);
 	return fabrik_data_chain[p_joint_idx].use_target_basis;
 }
 
-void SkeletonModification3DFABRIK::set_fabrik_joint_use_target_basis(int p_joint_idx, bool p_use_target_basis)
-{
+void SkeletonModification3DFABRIK::set_fabrik_joint_use_target_basis(int p_joint_idx, bool p_use_target_basis) {
 	ERR_FAIL_INDEX(p_joint_idx, fabrik_data_chain.size());
 	fabrik_data_chain.write[p_joint_idx].use_target_basis = p_use_target_basis;
 }
 
-float SkeletonModification3DFABRIK::get_fabrik_joint_roll(int p_joint_idx) const
-{
+float SkeletonModification3DFABRIK::get_fabrik_joint_roll(int p_joint_idx) const {
 	ERR_FAIL_INDEX_V(p_joint_idx, fabrik_data_chain.size(), 0.0);
 	return fabrik_data_chain[p_joint_idx].roll;
 }
 
-void SkeletonModification3DFABRIK::set_fabrik_joint_roll(int p_joint_idx, float p_roll)
-{
+void SkeletonModification3DFABRIK::set_fabrik_joint_roll(int p_joint_idx, float p_roll) {
 	ERR_FAIL_INDEX(p_joint_idx, fabrik_data_chain.size());
 	fabrik_data_chain.write[p_joint_idx].roll = p_roll;
 }
 
-void SkeletonModification3DFABRIK::_bind_methods()
-{
+void SkeletonModification3DFABRIK::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_target_node", "target_nodepath"), &SkeletonModification3DFABRIK::set_target_node);
 	ClassDB::bind_method(D_METHOD("get_target_node"), &SkeletonModification3DFABRIK::get_target_node);
 	ClassDB::bind_method(D_METHOD("set_fabrik_data_chain_length", "length"), &SkeletonModification3DFABRIK::set_fabrik_data_chain_length);
@@ -692,15 +562,11 @@ void SkeletonModification3DFABRIK::_bind_methods()
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "chain_max_iterations", PROPERTY_HINT_RANGE, "1,50,1"), "set_chain_max_iterations", "get_chain_max_iterations");
 }
 
-SkeletonModification3DFABRIK::SkeletonModification3DFABRIK()
-{
+SkeletonModification3DFABRIK::SkeletonModification3DFABRIK() {
 	stack = nullptr;
 	is_setup = false;
 	enabled = true;
 }
 
-SkeletonModification3DFABRIK::~SkeletonModification3DFABRIK()
-{
+SkeletonModification3DFABRIK::~SkeletonModification3DFABRIK() {
 }
-
-

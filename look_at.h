@@ -2,8 +2,7 @@
 
 #include "scene/resources/skeleton_modification_3d.h"
 
-class SkeletonModification3DLookAt : public SkeletonModification3D
-{
+class SkeletonModification3DLookAt : public SkeletonModification3D {
 	GDCLASS(SkeletonModification3DLookAt, SkeletonModification3D);
 
 private:
@@ -20,20 +19,19 @@ private:
 
 protected:
 	static void _bind_methods();
-	bool _get(const StringName& p_path, Variant& r_ret) const;
-	bool _set(const StringName& p_path, const Variant& p_value);
-	void _get_property_list(List<PropertyInfo>* p_list) const;
+	bool _get(const StringName &p_path, Variant &r_ret) const;
+	bool _set(const StringName &p_path, const Variant &p_value);
+	void _get_property_list(List<PropertyInfo> *p_list) const;
 
 public:
-	enum ROTATION_PLANE
-	{
+	enum ROTATION_PLANE {
 		ROTATION_PLANE_X,
 		ROTATION_PLANE_Y,
 		ROTATION_PLANE_Z
 	};
 
 	void execute(float delta) override;
-	void setup_modification(SkeletonModificationStack3D* p_stack) override;
+	void setup_modification(SkeletonModificationStack3D *p_stack) override;
 
 	void set_bone_name(String p_name);
 	String get_bone_name() const;
@@ -41,7 +39,7 @@ public:
 	void set_bone_index(int p_idx);
 	int get_bone_index() const;
 
-	void set_target_node(const NodePath& p_target_node);
+	void set_target_node(const NodePath &p_target_node);
 	NodePath get_target_node() const;
 
 	void set_additional_rotation(Vector3 p_offset);
@@ -55,6 +53,3 @@ public:
 	SkeletonModification3DLookAt();
 	~SkeletonModification3DLookAt();
 };
-
-
-

@@ -6,13 +6,11 @@
 // SkeletonModification3DJiggle
 ///////////////////////////////////////
 
-class SkeletonModification3DJiggle : public SkeletonModification3D
-{
+class SkeletonModification3DJiggle : public SkeletonModification3D {
 	GDCLASS(SkeletonModification3DJiggle, SkeletonModification3D);
 
 private:
-	struct Jiggle_Joint_Data
-	{
+	struct Jiggle_Joint_Data {
 		String bone_name = "";
 		int bone_idx = -1;
 
@@ -107,4 +105,3 @@ public:
 	SkeletonModification3DJiggle();
 	~SkeletonModification3DJiggle();
 };
-

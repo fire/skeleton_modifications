@@ -1,66 +1,41 @@
 #include "jiggle.h"
 
-
 ///////////////////////////////////////
 // Jiggle
 ///////////////////////////////////////
 
-bool SkeletonModification3DJiggle::_set(const StringName &p_path, const Variant &p_value)
-{
+bool SkeletonModification3DJiggle::_set(const StringName &p_path, const Variant &p_value) {
 	String path = p_path;
 
-	if (path.begins_with("joint_data/"))
-	{
+	if (path.begins_with("joint_data/")) {
 		int which = path.get_slicec('/', 1).to_int();
 		String what = path.get_slicec('/', 2);
 		ERR_FAIL_INDEX_V(which, jiggle_data_chain.size(), false);
 
-		if (what == "bone_name")
-		{
+		if (what == "bone_name") {
 			set_jiggle_joint_bone_name(which, p_value);
-		}
-		else if (what == "bone_index")
-		{
+		} else if (what == "bone_index") {
 			set_jiggle_joint_bone_index(which, p_value);
-		}
-		else if (what == "override_defaults")
-		{
+		} else if (what == "override_defaults") {
 			set_jiggle_joint_override(which, p_value);
-		}
-		else if (what == "stiffness")
-		{
+		} else if (what == "stiffness") {
 			set_jiggle_joint_stiffness(which, p_value);
-		}
-		else if (what == "mass")
-		{
+		} else if (what == "mass") {
 			set_jiggle_joint_mass(which, p_value);
-		}
-		else if (what == "damping")
-		{
+		} else if (what == "damping") {
 			set_jiggle_joint_damping(which, p_value);
-		}
-		else if (what == "use_gravity")
-		{
+		} else if (what == "use_gravity") {
 			set_jiggle_joint_use_gravity(which, p_value);
-		}
-		else if (what == "gravity")
-		{
+		} else if (what == "gravity") {
 			set_jiggle_joint_gravity(which, p_value);
-		}
-		else if (what == "roll")
-		{
+		} else if (what == "roll") {
 			set_jiggle_joint_roll(which, Math::deg2rad(float(p_value)));
 		}
 		return true;
-	}
-	else
-	{
-		if (path == "use_colliders")
-		{
+	} else {
+		if (path == "use_colliders") {
 			set_use_colliders(p_value);
-		}
-		else if (path == "collision_mask")
-		{
+		} else if (path == "collision_mask") {
 			set_collision_mask(p_value);
 		}
 		return true;
@@ -68,62 +43,38 @@ bool SkeletonModification3DJiggle::_set(const StringName &p_path, const Variant 
 	return true;
 }
 
-bool SkeletonModification3DJiggle::_get(const StringName &p_path, Variant &r_ret) const
-{
+bool SkeletonModification3DJiggle::_get(const StringName &p_path, Variant &r_ret) const {
 	String path = p_path;
 
-	if (path.begins_with("joint_data/"))
-	{
+	if (path.begins_with("joint_data/")) {
 		int which = path.get_slicec('/', 1).to_int();
 		String what = path.get_slicec('/', 2);
 		ERR_FAIL_INDEX_V(which, jiggle_data_chain.size(), false);
 
-		if (what == "bone_name")
-		{
+		if (what == "bone_name") {
 			r_ret = get_jiggle_joint_bone_name(which);
-		}
-		else if (what == "bone_index")
-		{
+		} else if (what == "bone_index") {
 			r_ret = get_jiggle_joint_bone_index(which);
-		}
-		else if (what == "override_defaults")
-		{
+		} else if (what == "override_defaults") {
 			r_ret = get_jiggle_joint_override(which);
-		}
-		else if (what == "stiffness")
-		{
+		} else if (what == "stiffness") {
 			r_ret = get_jiggle_joint_stiffness(which);
-		}
-		else if (what == "mass")
-		{
+		} else if (what == "mass") {
 			r_ret = get_jiggle_joint_mass(which);
-		}
-		else if (what == "damping")
-		{
+		} else if (what == "damping") {
 			r_ret = get_jiggle_joint_damping(which);
-		}
-		else if (what == "use_gravity")
-		{
+		} else if (what == "use_gravity") {
 			r_ret = get_jiggle_joint_use_gravity(which);
-		}
-		else if (what == "gravity")
-		{
+		} else if (what == "gravity") {
 			r_ret = get_jiggle_joint_gravity(which);
-		}
-		else if (what == "roll")
-		{
+		} else if (what == "roll") {
 			r_ret = Math::rad2deg(get_jiggle_joint_roll(which));
 		}
 		return true;
-	}
-	else
-	{
-		if (path == "use_colliders")
-		{
+	} else {
+		if (path == "use_colliders") {
 			r_ret = get_use_colliders();
-		}
-		else if (path == "collision_mask")
-		{
+		} else if (path == "collision_mask") {
 			r_ret = get_collision_mask();
 		}
 		return true;
@@ -131,16 +82,13 @@ bool SkeletonModification3DJiggle::_get(const StringName &p_path, Variant &r_ret
 	return true;
 }
 
-void SkeletonModification3DJiggle::_get_property_list(List<PropertyInfo> *p_list) const
-{
+void SkeletonModification3DJiggle::_get_property_list(List<PropertyInfo> *p_list) const {
 	p_list->push_back(PropertyInfo(Variant::BOOL, "use_colliders", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
-	if (use_colliders)
-	{
+	if (use_colliders) {
 		p_list->push_back(PropertyInfo(Variant::INT, "collision_mask", PROPERTY_HINT_LAYERS_3D_PHYSICS, "", PROPERTY_USAGE_DEFAULT));
 	}
 
-	for (int i = 0; i < jiggle_data_chain.size(); i++)
-	{
+	for (int i = 0; i < jiggle_data_chain.size(); i++) {
 		String base_string = "joint_data/" + itos(i) + "/";
 
 		p_list->push_back(PropertyInfo(Variant::STRING_NAME, base_string + "bone_name", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
@@ -148,30 +96,25 @@ void SkeletonModification3DJiggle::_get_property_list(List<PropertyInfo> *p_list
 		p_list->push_back(PropertyInfo(Variant::FLOAT, base_string + "roll", PROPERTY_HINT_RANGE, "-360,360,0.01", PROPERTY_USAGE_DEFAULT));
 		p_list->push_back(PropertyInfo(Variant::BOOL, base_string + "override_defaults", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 
-		if (jiggle_data_chain[i].override_defaults)
-		{
+		if (jiggle_data_chain[i].override_defaults) {
 			p_list->push_back(PropertyInfo(Variant::FLOAT, base_string + "stiffness", PROPERTY_HINT_RANGE, "0, 1000, 0.01", PROPERTY_USAGE_DEFAULT));
 			p_list->push_back(PropertyInfo(Variant::FLOAT, base_string + "mass", PROPERTY_HINT_RANGE, "0, 1000, 0.01", PROPERTY_USAGE_DEFAULT));
 			p_list->push_back(PropertyInfo(Variant::FLOAT, base_string + "damping", PROPERTY_HINT_RANGE, "0, 1, 0.01", PROPERTY_USAGE_DEFAULT));
 			p_list->push_back(PropertyInfo(Variant::BOOL, base_string + "use_gravity", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
-			if (jiggle_data_chain[i].use_gravity)
-			{
+			if (jiggle_data_chain[i].use_gravity) {
 				p_list->push_back(PropertyInfo(Variant::VECTOR3, base_string + "gravity", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 			}
 		}
 	}
 }
 
-void SkeletonModification3DJiggle::execute(float delta)
-{
+void SkeletonModification3DJiggle::execute(float delta) {
 	ERR_FAIL_COND_MSG(!stack || !is_setup || stack->skeleton == nullptr,
-					  "Modification is not setup and therefore cannot execute!");
-	if (!enabled)
-	{
+			"Modification is not setup and therefore cannot execute!");
+	if (!enabled) {
 		return;
 	}
-	if (target_node_cache.is_null())
-	{
+	if (target_node_cache.is_null()) {
 		_print_execution_error(true, "Target cache is out of date. Attempting to update...");
 		update_cache();
 		return;
@@ -179,27 +122,23 @@ void SkeletonModification3DJiggle::execute(float delta)
 	Node3D *target = Object::cast_to<Node3D>(ObjectDB::get_instance(target_node_cache));
 	_print_execution_error(!target || !target->is_inside_tree(), "Target node is not in the scene tree. Cannot execute modification!");
 
-	for (int i = 0; i < jiggle_data_chain.size(); i++)
-	{
+	for (int i = 0; i < jiggle_data_chain.size(); i++) {
 		_execute_jiggle_joint(i, target, delta);
 	}
 
 	execution_error_found = false;
 }
 
-void SkeletonModification3DJiggle::_execute_jiggle_joint(int p_joint_idx, Node3D *target, float delta)
-{
+void SkeletonModification3DJiggle::_execute_jiggle_joint(int p_joint_idx, Node3D *target, float delta) {
 	// Adopted from: https://wiki.unity3d.com/index.php/JiggleBone
 	// With modifications by TwistedTwigleg.
 
-	if (jiggle_data_chain[p_joint_idx].bone_idx <= -2)
-	{
+	if (jiggle_data_chain[p_joint_idx].bone_idx <= -2) {
 		jiggle_data_chain.write[p_joint_idx].bone_idx = stack->skeleton->find_bone(jiggle_data_chain[p_joint_idx].bone_name);
 	}
 	if (_print_execution_error(
-			jiggle_data_chain[p_joint_idx].bone_idx < 0 || jiggle_data_chain[p_joint_idx].bone_idx > stack->skeleton->get_bone_count(),
-			"Jiggle joint " + itos(p_joint_idx) + " bone index is invald. Cannot execute modification!"))
-	{
+				jiggle_data_chain[p_joint_idx].bone_idx < 0 || jiggle_data_chain[p_joint_idx].bone_idx > stack->skeleton->get_bone_count(),
+				"Jiggle joint " + itos(p_joint_idx) + " bone index is invald. Cannot execute modification!")) {
 		return;
 	}
 
@@ -208,8 +147,7 @@ void SkeletonModification3DJiggle::_execute_jiggle_joint(int p_joint_idx, Node3D
 
 	jiggle_data_chain.write[p_joint_idx].force = (target_position - jiggle_data_chain[p_joint_idx].dynamic_position) * jiggle_data_chain[p_joint_idx].stiffness * delta;
 
-	if (jiggle_data_chain[p_joint_idx].use_gravity)
-	{
+	if (jiggle_data_chain[p_joint_idx].use_gravity) {
 		Vector3 gravity_to_apply = new_bone_trans.basis.inverse().xform(jiggle_data_chain[p_joint_idx].gravity);
 		jiggle_data_chain.write[p_joint_idx].force += gravity_to_apply * delta;
 	}
@@ -223,10 +161,8 @@ void SkeletonModification3DJiggle::_execute_jiggle_joint(int p_joint_idx, Node3D
 
 	// Collision detection/response
 	// (Does not run in the editor, unlike the 2D version. Not sure why though...)
-	if (use_colliders)
-	{
-		if (execution_mode == SkeletonModificationStack3D::EXECUTION_MODE::execution_mode_physics_process)
-		{
+	if (use_colliders) {
+		if (execution_mode == SkeletonModificationStack3D::EXECUTION_MODE::execution_mode_physics_process) {
 			Ref<World3D> world_3d = stack->skeleton->get_world_3d();
 			ERR_FAIL_COND(world_3d.is_null());
 			PhysicsDirectSpaceState3D *space_state = PhysicsServer3D::get_singleton()->space_get_direct_state(world_3d->get_space());
@@ -238,21 +174,16 @@ void SkeletonModification3DJiggle::_execute_jiggle_joint(int p_joint_idx, Node3D
 
 			// Add exception support?
 			bool ray_hit = space_state->intersect_ray(new_bone_trans_world.origin, dynamic_position_world.get_origin(),
-													  ray_result, Set<RID>(), collision_mask);
+					ray_result, Set<RID>(), collision_mask);
 
-			if (ray_hit)
-			{
+			if (ray_hit) {
 				jiggle_data_chain.write[p_joint_idx].dynamic_position = jiggle_data_chain[p_joint_idx].last_noncollision_position;
 				jiggle_data_chain.write[p_joint_idx].acceleration = Vector3(0, 0, 0);
 				jiggle_data_chain.write[p_joint_idx].velocity = Vector3(0, 0, 0);
-			}
-			else
-			{
+			} else {
 				jiggle_data_chain.write[p_joint_idx].last_noncollision_position = jiggle_data_chain[p_joint_idx].dynamic_position;
 			}
-		}
-		else
-		{
+		} else {
 			WARN_PRINT_ONCE("Jiggle modifier: You cannot detect colliders without the stack mode being set to _physics_process!");
 		}
 	}
@@ -272,12 +203,9 @@ void SkeletonModification3DJiggle::_execute_jiggle_joint(int p_joint_idx, Node3D
 	stack->skeleton->force_update_bone_children_transforms(jiggle_data_chain[p_joint_idx].bone_idx);
 }
 
-void SkeletonModification3DJiggle::_update_jiggle_joint_data()
-{
-	for (int i = 0; i < jiggle_data_chain.size(); i++)
-	{
-		if (!jiggle_data_chain[i].override_defaults)
-		{
+void SkeletonModification3DJiggle::_update_jiggle_joint_data() {
+	for (int i = 0; i < jiggle_data_chain.size(); i++) {
+		if (!jiggle_data_chain[i].override_defaults) {
 			set_jiggle_joint_stiffness(i, stiffness);
 			set_jiggle_joint_mass(i, mass);
 			set_jiggle_joint_damping(i, damping);
@@ -287,22 +215,17 @@ void SkeletonModification3DJiggle::_update_jiggle_joint_data()
 	}
 }
 
-void SkeletonModification3DJiggle::setup_modification(SkeletonModificationStack3D *p_stack)
-{
+void SkeletonModification3DJiggle::setup_modification(SkeletonModificationStack3D *p_stack) {
 	stack = p_stack;
 
-	if (stack)
-	{
+	if (stack) {
 		is_setup = true;
 		execution_error_found = false;
 
-		if (stack->skeleton)
-		{
-			for (int i = 0; i < jiggle_data_chain.size(); i++)
-			{
+		if (stack->skeleton) {
+			for (int i = 0; i < jiggle_data_chain.size(); i++) {
 				int bone_idx = jiggle_data_chain[i].bone_idx;
-				if (bone_idx > 0 && bone_idx < stack->skeleton->get_bone_count())
-				{
+				if (bone_idx > 0 && bone_idx < stack->skeleton->get_bone_count()) {
 					jiggle_data_chain.write[i].dynamic_position = stack->skeleton->local_pose_to_global_pose(bone_idx, stack->skeleton->get_bone_local_pose_override(bone_idx)).origin;
 				}
 			}
@@ -312,26 +235,21 @@ void SkeletonModification3DJiggle::setup_modification(SkeletonModificationStack3
 	}
 }
 
-void SkeletonModification3DJiggle::update_cache()
-{
-	if (!is_setup || !stack)
-	{
+void SkeletonModification3DJiggle::update_cache() {
+	if (!is_setup || !stack) {
 		_print_execution_error(true, "Cannot update target cache: modification is not properly setup!");
 		return;
 	}
 
 	target_node_cache = ObjectID();
-	if (stack->skeleton)
-	{
-		if (stack->skeleton->is_inside_tree())
-		{
-			if (stack->skeleton->has_node(target_node))
-			{
+	if (stack->skeleton) {
+		if (stack->skeleton->is_inside_tree()) {
+			if (stack->skeleton->has_node(target_node)) {
 				Node *node = stack->skeleton->get_node(target_node);
 				ERR_FAIL_COND_MSG(!node || stack->skeleton == node,
-								  "Cannot update target cache: node is this modification's skeleton or cannot be found!");
+						"Cannot update target cache: node is this modification's skeleton or cannot be found!");
 				ERR_FAIL_COND_MSG(!node->is_inside_tree(),
-								  "Cannot update target cache: node is not in the scene tree!");
+						"Cannot update target cache: node is not in the scene tree!");
 				target_node_cache = node->get_instance_id();
 
 				execution_error_found = false;
@@ -340,239 +258,199 @@ void SkeletonModification3DJiggle::update_cache()
 	}
 }
 
-void SkeletonModification3DJiggle::set_target_node(const NodePath &p_target_node)
-{
+void SkeletonModification3DJiggle::set_target_node(const NodePath &p_target_node) {
 	target_node = p_target_node;
 	update_cache();
 }
 
-NodePath SkeletonModification3DJiggle::get_target_node() const
-{
+NodePath SkeletonModification3DJiggle::get_target_node() const {
 	return target_node;
 }
 
-void SkeletonModification3DJiggle::set_stiffness(float p_stiffness)
-{
+void SkeletonModification3DJiggle::set_stiffness(float p_stiffness) {
 	ERR_FAIL_COND_MSG(p_stiffness < 0, "Stiffness cannot be set to a negative value!");
 	stiffness = p_stiffness;
 	_update_jiggle_joint_data();
 }
 
-float SkeletonModification3DJiggle::get_stiffness() const
-{
+float SkeletonModification3DJiggle::get_stiffness() const {
 	return stiffness;
 }
 
-void SkeletonModification3DJiggle::set_mass(float p_mass)
-{
+void SkeletonModification3DJiggle::set_mass(float p_mass) {
 	ERR_FAIL_COND_MSG(p_mass < 0, "Mass cannot be set to a negative value!");
 	mass = p_mass;
 	_update_jiggle_joint_data();
 }
 
-float SkeletonModification3DJiggle::get_mass() const
-{
+float SkeletonModification3DJiggle::get_mass() const {
 	return mass;
 }
 
-void SkeletonModification3DJiggle::set_damping(float p_damping)
-{
+void SkeletonModification3DJiggle::set_damping(float p_damping) {
 	ERR_FAIL_COND_MSG(p_damping < 0, "Damping cannot be set to a negative value!");
 	ERR_FAIL_COND_MSG(p_damping > 1, "Damping cannot be more than one!");
 	damping = p_damping;
 	_update_jiggle_joint_data();
 }
 
-float SkeletonModification3DJiggle::get_damping() const
-{
+float SkeletonModification3DJiggle::get_damping() const {
 	return damping;
 }
 
-void SkeletonModification3DJiggle::set_use_gravity(bool p_use_gravity)
-{
+void SkeletonModification3DJiggle::set_use_gravity(bool p_use_gravity) {
 	use_gravity = p_use_gravity;
 	_update_jiggle_joint_data();
 }
 
-bool SkeletonModification3DJiggle::get_use_gravity() const
-{
+bool SkeletonModification3DJiggle::get_use_gravity() const {
 	return use_gravity;
 }
 
-void SkeletonModification3DJiggle::set_gravity(Vector3 p_gravity)
-{
+void SkeletonModification3DJiggle::set_gravity(Vector3 p_gravity) {
 	gravity = p_gravity;
 	_update_jiggle_joint_data();
 }
 
-Vector3 SkeletonModification3DJiggle::get_gravity() const
-{
+Vector3 SkeletonModification3DJiggle::get_gravity() const {
 	return gravity;
 }
 
-void SkeletonModification3DJiggle::set_use_colliders(bool p_use_collider)
-{
+void SkeletonModification3DJiggle::set_use_colliders(bool p_use_collider) {
 	use_colliders = p_use_collider;
 }
 
-bool SkeletonModification3DJiggle::get_use_colliders() const
-{
+bool SkeletonModification3DJiggle::get_use_colliders() const {
 	return use_colliders;
 }
 
-void SkeletonModification3DJiggle::set_collision_mask(int p_mask)
-{
+void SkeletonModification3DJiggle::set_collision_mask(int p_mask) {
 	collision_mask = p_mask;
 }
 
-int SkeletonModification3DJiggle::get_collision_mask() const
-{
+int SkeletonModification3DJiggle::get_collision_mask() const {
 	return collision_mask;
 }
 
 // Jiggle joint data functions
-int SkeletonModification3DJiggle::get_jiggle_data_chain_length()
-{
+int SkeletonModification3DJiggle::get_jiggle_data_chain_length() {
 	return jiggle_data_chain.size();
 }
 
-void SkeletonModification3DJiggle::set_jiggle_data_chain_length(int p_length)
-{
+void SkeletonModification3DJiggle::set_jiggle_data_chain_length(int p_length) {
 	ERR_FAIL_COND(p_length < 0);
 	jiggle_data_chain.resize(p_length);
 	execution_error_found = false;
 }
 
-void SkeletonModification3DJiggle::set_jiggle_joint_bone_name(int joint_idx, String p_name)
-{
+void SkeletonModification3DJiggle::set_jiggle_joint_bone_name(int joint_idx, String p_name) {
 	ERR_FAIL_INDEX(joint_idx, jiggle_data_chain.size());
 
 	jiggle_data_chain.write[joint_idx].bone_name = p_name;
-	if (stack && stack->skeleton)
-	{
+	if (stack && stack->skeleton) {
 		jiggle_data_chain.write[joint_idx].bone_idx = stack->skeleton->find_bone(p_name);
 	}
 	execution_error_found = false;
 }
 
-String SkeletonModification3DJiggle::get_jiggle_joint_bone_name(int joint_idx) const
-{
+String SkeletonModification3DJiggle::get_jiggle_joint_bone_name(int joint_idx) const {
 	ERR_FAIL_INDEX_V(joint_idx, jiggle_data_chain.size(), "");
 	return jiggle_data_chain[joint_idx].bone_name;
 }
 
-int SkeletonModification3DJiggle::get_jiggle_joint_bone_index(int joint_idx) const
-{
+int SkeletonModification3DJiggle::get_jiggle_joint_bone_index(int joint_idx) const {
 	ERR_FAIL_INDEX_V(joint_idx, jiggle_data_chain.size(), -1);
 	return jiggle_data_chain[joint_idx].bone_idx;
 }
 
-void SkeletonModification3DJiggle::set_jiggle_joint_bone_index(int joint_idx, int p_bone_idx)
-{
+void SkeletonModification3DJiggle::set_jiggle_joint_bone_index(int joint_idx, int p_bone_idx) {
 	ERR_FAIL_INDEX(joint_idx, jiggle_data_chain.size());
 	ERR_FAIL_COND_MSG(p_bone_idx < 0, "Bone index is out of range: The index is too low!");
 	jiggle_data_chain.write[joint_idx].bone_idx = p_bone_idx;
 
-	if (stack)
-	{
-		if (stack->skeleton)
-		{
+	if (stack) {
+		if (stack->skeleton) {
 			jiggle_data_chain.write[joint_idx].bone_name = stack->skeleton->get_bone_name(p_bone_idx);
 		}
 	}
 	execution_error_found = false;
 }
 
-void SkeletonModification3DJiggle::set_jiggle_joint_override(int joint_idx, bool p_override)
-{
+void SkeletonModification3DJiggle::set_jiggle_joint_override(int joint_idx, bool p_override) {
 	ERR_FAIL_INDEX(joint_idx, jiggle_data_chain.size());
 	jiggle_data_chain.write[joint_idx].override_defaults = p_override;
 	_update_jiggle_joint_data();
 }
 
-bool SkeletonModification3DJiggle::get_jiggle_joint_override(int joint_idx) const
-{
+bool SkeletonModification3DJiggle::get_jiggle_joint_override(int joint_idx) const {
 	ERR_FAIL_INDEX_V(joint_idx, jiggle_data_chain.size(), false);
 	return jiggle_data_chain[joint_idx].override_defaults;
 }
 
-void SkeletonModification3DJiggle::set_jiggle_joint_stiffness(int joint_idx, float p_stiffness)
-{
+void SkeletonModification3DJiggle::set_jiggle_joint_stiffness(int joint_idx, float p_stiffness) {
 	ERR_FAIL_COND_MSG(p_stiffness < 0, "Stiffness cannot be set to a negative value!");
 	ERR_FAIL_INDEX(joint_idx, jiggle_data_chain.size());
 	jiggle_data_chain.write[joint_idx].stiffness = p_stiffness;
 }
 
-float SkeletonModification3DJiggle::get_jiggle_joint_stiffness(int joint_idx) const
-{
+float SkeletonModification3DJiggle::get_jiggle_joint_stiffness(int joint_idx) const {
 	ERR_FAIL_INDEX_V(joint_idx, jiggle_data_chain.size(), -1);
 	return jiggle_data_chain[joint_idx].stiffness;
 }
 
-void SkeletonModification3DJiggle::set_jiggle_joint_mass(int joint_idx, float p_mass)
-{
+void SkeletonModification3DJiggle::set_jiggle_joint_mass(int joint_idx, float p_mass) {
 	ERR_FAIL_COND_MSG(p_mass < 0, "Mass cannot be set to a negative value!");
 	ERR_FAIL_INDEX(joint_idx, jiggle_data_chain.size());
 	jiggle_data_chain.write[joint_idx].mass = p_mass;
 }
 
-float SkeletonModification3DJiggle::get_jiggle_joint_mass(int joint_idx) const
-{
+float SkeletonModification3DJiggle::get_jiggle_joint_mass(int joint_idx) const {
 	ERR_FAIL_INDEX_V(joint_idx, jiggle_data_chain.size(), -1);
 	return jiggle_data_chain[joint_idx].mass;
 }
 
-void SkeletonModification3DJiggle::set_jiggle_joint_damping(int joint_idx, float p_damping)
-{
+void SkeletonModification3DJiggle::set_jiggle_joint_damping(int joint_idx, float p_damping) {
 	ERR_FAIL_COND_MSG(p_damping < 0, "Damping cannot be set to a negative value!");
 	ERR_FAIL_INDEX(joint_idx, jiggle_data_chain.size());
 	jiggle_data_chain.write[joint_idx].damping = p_damping;
 }
 
-float SkeletonModification3DJiggle::get_jiggle_joint_damping(int joint_idx) const
-{
+float SkeletonModification3DJiggle::get_jiggle_joint_damping(int joint_idx) const {
 	ERR_FAIL_INDEX_V(joint_idx, jiggle_data_chain.size(), -1);
 	return jiggle_data_chain[joint_idx].damping;
 }
 
-void SkeletonModification3DJiggle::set_jiggle_joint_use_gravity(int joint_idx, bool p_use_gravity)
-{
+void SkeletonModification3DJiggle::set_jiggle_joint_use_gravity(int joint_idx, bool p_use_gravity) {
 	ERR_FAIL_INDEX(joint_idx, jiggle_data_chain.size());
 	jiggle_data_chain.write[joint_idx].use_gravity = p_use_gravity;
 }
 
-bool SkeletonModification3DJiggle::get_jiggle_joint_use_gravity(int joint_idx) const
-{
+bool SkeletonModification3DJiggle::get_jiggle_joint_use_gravity(int joint_idx) const {
 	ERR_FAIL_INDEX_V(joint_idx, jiggle_data_chain.size(), false);
 	return jiggle_data_chain[joint_idx].use_gravity;
 }
 
-void SkeletonModification3DJiggle::set_jiggle_joint_gravity(int joint_idx, Vector3 p_gravity)
-{
+void SkeletonModification3DJiggle::set_jiggle_joint_gravity(int joint_idx, Vector3 p_gravity) {
 	ERR_FAIL_INDEX(joint_idx, jiggle_data_chain.size());
 	jiggle_data_chain.write[joint_idx].gravity = p_gravity;
 }
 
-Vector3 SkeletonModification3DJiggle::get_jiggle_joint_gravity(int joint_idx) const
-{
+Vector3 SkeletonModification3DJiggle::get_jiggle_joint_gravity(int joint_idx) const {
 	ERR_FAIL_INDEX_V(joint_idx, jiggle_data_chain.size(), Vector3(0, 0, 0));
 	return jiggle_data_chain[joint_idx].gravity;
 }
 
-void SkeletonModification3DJiggle::set_jiggle_joint_roll(int joint_idx, float p_roll)
-{
+void SkeletonModification3DJiggle::set_jiggle_joint_roll(int joint_idx, float p_roll) {
 	ERR_FAIL_INDEX(joint_idx, jiggle_data_chain.size());
 	jiggle_data_chain.write[joint_idx].roll = p_roll;
 }
 
-float SkeletonModification3DJiggle::get_jiggle_joint_roll(int joint_idx) const
-{
+float SkeletonModification3DJiggle::get_jiggle_joint_roll(int joint_idx) const {
 	ERR_FAIL_INDEX_V(joint_idx, jiggle_data_chain.size(), 0.0);
 	return jiggle_data_chain[joint_idx].roll;
 }
 
-void SkeletonModification3DJiggle::_bind_methods()
-{
+void SkeletonModification3DJiggle::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_target_node", "target_nodepath"), &SkeletonModification3DJiggle::set_target_node);
 	ClassDB::bind_method(D_METHOD("get_target_node"), &SkeletonModification3DJiggle::get_target_node);
 
@@ -626,8 +504,7 @@ void SkeletonModification3DJiggle::_bind_methods()
 	ADD_GROUP("", "");
 }
 
-SkeletonModification3DJiggle::SkeletonModification3DJiggle()
-{
+SkeletonModification3DJiggle::SkeletonModification3DJiggle() {
 	stack = nullptr;
 	is_setup = false;
 	jiggle_data_chain = Vector<Jiggle_Joint_Data>();
@@ -639,7 +516,5 @@ SkeletonModification3DJiggle::SkeletonModification3DJiggle()
 	enabled = true;
 }
 
-SkeletonModification3DJiggle::~SkeletonModification3DJiggle()
-{
+SkeletonModification3DJiggle::~SkeletonModification3DJiggle() {
 }
-

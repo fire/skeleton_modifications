@@ -6,8 +6,7 @@
 // SkeletonModification3DTwoBoneIK
 ///////////////////////////////////////
 
-class SkeletonModification3DTwoBoneIK : public SkeletonModification3D
-{
+class SkeletonModification3DTwoBoneIK : public SkeletonModification3D {
 	GDCLASS(SkeletonModification3DTwoBoneIK, SkeletonModification3D);
 
 private:
@@ -87,5 +86,3 @@ public:
 	SkeletonModification3DTwoBoneIK();
 	~SkeletonModification3DTwoBoneIK();
 };
-
-

@@ -6,13 +6,11 @@
 // SkeletonModification3DFABRIK
 ///////////////////////////////////////
 
-class SkeletonModification3DFABRIK : public SkeletonModification3D
-{
+class SkeletonModification3DFABRIK : public SkeletonModification3D {
 	GDCLASS(SkeletonModification3DFABRIK, SkeletonModification3D);
 
 private:
-	struct FABRIK_Joint_Data
-	{
+	struct FABRIK_Joint_Data {
 		String bone_name = "";
 		int bone_idx = -1;
 		float length = -1;
@@ -91,5 +89,3 @@ public:
 	SkeletonModification3DFABRIK();
 	~SkeletonModification3DFABRIK();
 };
-
-

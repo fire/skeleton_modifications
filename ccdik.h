@@ -5,20 +5,17 @@
 // SkeletonModification3DCCDIK
 ///////////////////////////////////////
 
-class SkeletonModification3DCCDIK : public SkeletonModification3D
-{
+class SkeletonModification3DCCDIK : public SkeletonModification3D {
 	GDCLASS(SkeletonModification3DCCDIK, SkeletonModification3D);
 
 private:
-	enum CCDIK_Axes
-	{
+	enum CCDIK_Axes {
 		AXIS_X,
 		AXIS_Y,
 		AXIS_Z
 	};
 
-	struct CCDIK_Joint_Data
-	{
+	struct CCDIK_Joint_Data {
 		String bone_name = "";
 		int bone_idx = -1;
 		int ccdik_axis = 0;
