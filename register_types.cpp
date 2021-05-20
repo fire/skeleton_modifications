@@ -1,7 +1,11 @@
 #include "register_types.h"
 
 #include "core/object/class_db.h"
-#include "skeleton_modification_3d.h"
+#include "two_bone_ik.h"
+#include "jiggle.h"
+#include "fabrik.h"
+#include "ccdik.h"
+#include "look_at.h"
 
 void register_skeleton_modifications_types() {
 	ClassDB::register_class<SkeletonModification3DTwoBoneIK>();
