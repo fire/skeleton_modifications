@@ -69,7 +69,7 @@ void SkeletonModification3DLookAt::execute(float delta) {
 		return;
 	}
 
-	Transform new_bone_trans = stack->skeleton->get_bone_local_pose_override(bone_idx);
+	Transform3D new_bone_trans = stack->skeleton->get_bone_local_pose_override(bone_idx);
 	Vector3 target_pos = stack->skeleton->global_pose_to_local_pose(bone_idx, stack->skeleton->world_transform_to_global_pose(target->get_global_transform())).origin;
 
 	// Lock the rotation to a plane relative to the bone by changing the target position

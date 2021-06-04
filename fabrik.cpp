@@ -133,12 +133,12 @@ void SkeletonModification3DFABRIK::execute(float delta) {
 			return;
 		}
 
-		Transform local_pose_override = stack->skeleton->get_bone_local_pose_override(fabrik_data_chain[i].bone_idx);
+		Transform3D local_pose_override = stack->skeleton->get_bone_local_pose_override(fabrik_data_chain[i].bone_idx);
 
 		// Apply magnet positions:
 		if (stack->skeleton->get_bone_parent(fabrik_data_chain[i].bone_idx) >= 0) {
 			int parent_bone_idx = stack->skeleton->get_bone_parent(fabrik_data_chain[i].bone_idx);
-			Transform conversion_transform = (stack->skeleton->get_bone_global_pose(parent_bone_idx) * stack->skeleton->get_bone_rest(parent_bone_idx));
+			Transform3D conversion_transform = (stack->skeleton->get_bone_global_pose(parent_bone_idx) * stack->skeleton->get_bone_rest(parent_bone_idx));
 			local_pose_override.origin += conversion_transform.basis.xform_inv(fabrik_data_chain[i].magnet_position);
 		} else {
 			local_pose_override.origin += fabrik_data_chain[i].magnet_position;
@@ -175,11 +175,11 @@ void SkeletonModification3DFABRIK::execute(float delta) {
 
 void SkeletonModification3DFABRIK::chain_backwards() {
 	int final_bone_idx = fabrik_data_chain[final_joint_idx].bone_idx;
-	Transform final_joint_trans = stack->skeleton->local_pose_to_global_pose(final_bone_idx, stack->skeleton->get_bone_local_pose_override(final_bone_idx));
+	Transform3D final_joint_trans = stack->skeleton->local_pose_to_global_pose(final_bone_idx, stack->skeleton->get_bone_local_pose_override(final_bone_idx));
 
 	// Get the direction the final bone is facing in.
 	stack->skeleton->update_bone_rest_forward_vector(final_bone_idx);
-	Transform final_bone_direction_trans = final_joint_trans.looking_at(target_global_pose.origin, Vector3(0, 1, 0));
+	Transform3D final_bone_direction_trans = final_joint_trans.looking_at(target_global_pose.origin, Vector3(0, 1, 0));
 	final_bone_direction_trans.basis = stack->skeleton->global_pose_z_forward_to_bone_forward(final_bone_idx, final_bone_direction_trans.basis);
 	Vector3 direction = final_bone_direction_trans.basis.xform(stack->skeleton->get_bone_axis_forward_vector(final_bone_idx)).normalized();
 
@@ -197,10 +197,10 @@ void SkeletonModification3DFABRIK::chain_backwards() {
 	int i = final_joint_idx;
 	while (i >= 1) {
 		int next_bone_idx = fabrik_data_chain[i].bone_idx;
-		Transform next_bone_trans = stack->skeleton->local_pose_to_global_pose(next_bone_idx, stack->skeleton->get_bone_local_pose_override(next_bone_idx));
+		Transform3D next_bone_trans = stack->skeleton->local_pose_to_global_pose(next_bone_idx, stack->skeleton->get_bone_local_pose_override(next_bone_idx));
 		i -= 1;
 		int current_bone_idx = fabrik_data_chain[i].bone_idx;
-		Transform current_trans = stack->skeleton->local_pose_to_global_pose(current_bone_idx, stack->skeleton->get_bone_local_pose_override(current_bone_idx));
+		Transform3D current_trans = stack->skeleton->local_pose_to_global_pose(current_bone_idx, stack->skeleton->get_bone_local_pose_override(current_bone_idx));
 
 		float length = fabrik_data_chain[i].length / (next_bone_trans.origin - current_trans.origin).length();
 		current_trans.origin = next_bone_trans.origin.lerp(current_trans.origin, length);
@@ -213,15 +213,15 @@ void SkeletonModification3DFABRIK::chain_backwards() {
 void SkeletonModification3DFABRIK::chain_forwards() {
 	// Set root at the initial position.
 	int origin_bone_idx = fabrik_data_chain[0].bone_idx;
-	Transform root_transform = stack->skeleton->local_pose_to_global_pose(origin_bone_idx, stack->skeleton->get_bone_local_pose_override(origin_bone_idx));
+	Transform3D root_transform = stack->skeleton->local_pose_to_global_pose(origin_bone_idx, stack->skeleton->get_bone_local_pose_override(origin_bone_idx));
 	root_transform.origin = origin_global_pose.origin;
 	stack->skeleton->set_bone_local_pose_override(origin_bone_idx, stack->skeleton->global_pose_to_local_pose(origin_bone_idx, root_transform), stack->strength, true);
 
 	for (int i = 0; i < fabrik_data_chain.size() - 1; i++) {
 		int current_bone_idx = fabrik_data_chain[i].bone_idx;
-		Transform current_trans = stack->skeleton->local_pose_to_global_pose(current_bone_idx, stack->skeleton->get_bone_local_pose_override(current_bone_idx));
+		Transform3D current_trans = stack->skeleton->local_pose_to_global_pose(current_bone_idx, stack->skeleton->get_bone_local_pose_override(current_bone_idx));
 		int next_bone_idx = fabrik_data_chain[i + 1].bone_idx;
-		Transform next_bone_trans = stack->skeleton->local_pose_to_global_pose(next_bone_idx, stack->skeleton->get_bone_local_pose_override(next_bone_idx));
+		Transform3D next_bone_trans = stack->skeleton->local_pose_to_global_pose(next_bone_idx, stack->skeleton->get_bone_local_pose_override(next_bone_idx));
 
 		float length = fabrik_data_chain[i].length / (current_trans.origin - next_bone_trans.origin).length();
 		next_bone_trans.origin = current_trans.origin.lerp(next_bone_trans.origin, length);
@@ -234,7 +234,7 @@ void SkeletonModification3DFABRIK::chain_forwards() {
 void SkeletonModification3DFABRIK::chain_apply() {
 	for (int i = 0; i < fabrik_data_chain.size(); i++) {
 		int current_bone_idx = fabrik_data_chain[i].bone_idx;
-		Transform current_trans = stack->skeleton->get_bone_local_pose_override(current_bone_idx);
+		Transform3D current_trans = stack->skeleton->get_bone_local_pose_override(current_bone_idx);
 		current_trans = stack->skeleton->local_pose_to_global_pose(current_bone_idx, current_trans);
 
 		// If this is the last bone in the chain...
@@ -251,7 +251,7 @@ void SkeletonModification3DFABRIK::chain_apply() {
 			}
 		} else { // every other bone in the chain...
 			int next_bone_idx = fabrik_data_chain[i + 1].bone_idx;
-			Transform next_trans = stack->skeleton->local_pose_to_global_pose(next_bone_idx, stack->skeleton->get_bone_local_pose_override(next_bone_idx));
+			Transform3D next_trans = stack->skeleton->local_pose_to_global_pose(next_bone_idx, stack->skeleton->get_bone_local_pose_override(next_bone_idx));
 
 			// Get the forward direction that the basis is facing in right now.
 			stack->skeleton->update_bone_rest_forward_vector(current_bone_idx);
@@ -465,7 +465,7 @@ void SkeletonModification3DFABRIK::fabrik_joint_auto_calculate_length(int p_join
 		ERR_FAIL_COND_MSG(!tip_node, "Tip node for joint " + itos(p_joint_idx) + "is not a Node3D-based node. Cannot calculate length...");
 		ERR_FAIL_COND_MSG(!tip_node->is_inside_tree(), "Tip node for joint " + itos(p_joint_idx) + "is not in the scene tree. Cannot calculate length...");
 
-		Transform node_trans = tip_node->get_global_transform();
+		Transform3D node_trans = tip_node->get_global_transform();
 		node_trans = stack->skeleton->world_transform_to_global_pose(node_trans);
 		node_trans = stack->skeleton->global_pose_to_local_pose(fabrik_data_chain[p_joint_idx].bone_idx, node_trans);
 		fabrik_data_chain.write[p_joint_idx].length = node_trans.origin.length();
@@ -478,7 +478,7 @@ void SkeletonModification3DFABRIK::fabrik_joint_auto_calculate_length(int p_join
 
 		float final_length = 0;
 		for (int i = 0; i < bone_children.size(); i++) {
-			Transform child_transform = stack->skeleton->get_bone_global_pose(bone_children[i]);
+			Transform3D child_transform = stack->skeleton->get_bone_global_pose(bone_children[i]);
 			final_length += stack->skeleton->global_pose_to_local_pose(fabrik_data_chain[p_joint_idx].bone_idx, child_transform).origin.length();
 		}
 		fabrik_data_chain.write[p_joint_idx].length = final_length / bone_children.size();

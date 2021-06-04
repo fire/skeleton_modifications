@@ -163,10 +163,10 @@ void SkeletonModification3DTwoBoneIK::execute(float delta) {
 	if (_print_execution_error(!target || !target->is_inside_tree(), "Target node is not in the scene tree. Cannot execute modification!")) {
 		return;
 	}
-	Transform target_trans = stack->skeleton->world_transform_to_global_pose(target->get_global_transform());
+	Transform3D target_trans = stack->skeleton->world_transform_to_global_pose(target->get_global_transform());
 
-	Transform bone_one_trans;
-	Transform bone_two_trans;
+	Transform3D bone_one_trans;
+	Transform3D bone_two_trans;
 
 	// Make the first joint look at the pole, and the second look at the target. That way, the
 	// TwoBoneIK solver has to really only handle extension/contraction, which should make it align with the pole.
@@ -181,7 +181,7 @@ void SkeletonModification3DTwoBoneIK::execute(float delta) {
 		if (_print_execution_error(!pole || !pole->is_inside_tree(), "Pole node is not in the scene tree. Cannot execute modification!")) {
 			return;
 		}
-		Transform pole_trans = stack->skeleton->world_transform_to_global_pose(pole->get_global_transform());
+		Transform3D pole_trans = stack->skeleton->world_transform_to_global_pose(pole->get_global_transform());
 
 		bone_one_trans = stack->skeleton->local_pose_to_global_pose(joint_one_bone_idx, stack->skeleton->get_bone_local_pose_override(joint_one_bone_idx));
 		bone_one_trans = bone_one_trans.looking_at(pole_trans.origin, Vector3(0, 1, 0));
@@ -203,7 +203,7 @@ void SkeletonModification3DTwoBoneIK::execute(float delta) {
 		bone_two_trans = stack->skeleton->local_pose_to_global_pose(joint_two_bone_idx, stack->skeleton->get_bone_local_pose_override(joint_two_bone_idx));
 	}
 
-	Transform bone_two_tip_trans;
+	Transform3D bone_two_tip_trans;
 	if (use_tip_node) {
 		if (tip_node_cache.is_null()) {
 			_print_execution_error(true, "Tip cache is out of date. Attempting to update...");
@@ -434,8 +434,8 @@ void SkeletonModification3DTwoBoneIK::calculate_joint_lengths() {
 	ERR_FAIL_COND_MSG(joint_one_bone_idx <= -1 || joint_two_bone_idx <= -1,
 			"One of the bones in the TwoBoneIK modification are not set! Cannot calculate joint lengths!");
 
-	Transform bone_one_rest_trans = stack->skeleton->get_bone_global_pose(joint_one_bone_idx);
-	Transform bone_two_rest_trans = stack->skeleton->get_bone_global_pose(joint_two_bone_idx);
+	Transform3D bone_one_rest_trans = stack->skeleton->get_bone_global_pose(joint_one_bone_idx);
+	Transform3D bone_two_rest_trans = stack->skeleton->get_bone_global_pose(joint_two_bone_idx);
 
 	joint_one_length = bone_one_rest_trans.origin.distance_to(bone_two_rest_trans.origin);
 
@@ -447,7 +447,7 @@ void SkeletonModification3DTwoBoneIK::calculate_joint_lengths() {
 
 		Node3D *tip = Object::cast_to<Node3D>(ObjectDB::get_instance(tip_node_cache));
 		if (tip) {
-			Transform bone_tip_trans = stack->skeleton->world_transform_to_global_pose(tip->get_global_transform());
+			Transform3D bone_tip_trans = stack->skeleton->world_transform_to_global_pose(tip->get_global_transform());
 			joint_two_length = bone_two_rest_trans.origin.distance_to(bone_tip_trans.origin);
 		}
 	} else {

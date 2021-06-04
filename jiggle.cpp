@@ -142,7 +142,7 @@ void SkeletonModification3DJiggle::_execute_jiggle_joint(int p_joint_idx, Node3D
 		return;
 	}
 
-	Transform new_bone_trans = stack->skeleton->local_pose_to_global_pose(jiggle_data_chain[p_joint_idx].bone_idx, stack->skeleton->get_bone_local_pose_override(jiggle_data_chain[p_joint_idx].bone_idx));
+	Transform3D new_bone_trans = stack->skeleton->local_pose_to_global_pose(jiggle_data_chain[p_joint_idx].bone_idx, stack->skeleton->get_bone_local_pose_override(jiggle_data_chain[p_joint_idx].bone_idx));
 	Vector3 target_position = stack->skeleton->world_transform_to_global_pose(target->get_global_transform()).origin;
 
 	jiggle_data_chain.write[p_joint_idx].force = (target_position - jiggle_data_chain[p_joint_idx].dynamic_position) * jiggle_data_chain[p_joint_idx].stiffness * delta;
@@ -169,8 +169,8 @@ void SkeletonModification3DJiggle::_execute_jiggle_joint(int p_joint_idx, Node3D
 			PhysicsDirectSpaceState3D::RayResult ray_result;
 
 			// Convert to world transforms, which is what the physics server needs
-			Transform new_bone_trans_world = stack->skeleton->global_pose_to_world_transform(new_bone_trans);
-			Transform dynamic_position_world = stack->skeleton->global_pose_to_world_transform(Transform(Basis(), jiggle_data_chain[p_joint_idx].dynamic_position));
+			Transform3D new_bone_trans_world = stack->skeleton->global_pose_to_world_transform(new_bone_trans);
+			Transform3D dynamic_position_world = stack->skeleton->global_pose_to_world_transform(Transform3D(Basis(), jiggle_data_chain[p_joint_idx].dynamic_position));
 
 			// Add exception support?
 			bool ray_hit = space_state->intersect_ray(new_bone_trans_world.origin, dynamic_position_world.get_origin(),
