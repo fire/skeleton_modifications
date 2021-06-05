@@ -245,10 +245,10 @@ void SkeletonModification3DTwoBoneIK::execute(float delta) {
 	Vector3 axis_1 = bone_one_trans.origin.direction_to(bone_two_tip_trans.origin).cross(bone_one_trans.origin.direction_to(target_trans.origin));
 
 	// Make a quaternion with the delta rotation needed to rotate the first joint into alignment and apply it to the transform.
-	Quat bone_one_quat = bone_one_trans.basis.get_rotation_quat();
-	Quat rot_0 = Quat(bone_one_quat.inverse().xform(axis_0).normalized(), (ac_ab_1 - ac_ab_0));
-	Quat rot_2 = Quat(bone_one_quat.inverse().xform(axis_1).normalized(), ac_at_0);
-	bone_one_trans.basis.set_quat(bone_one_quat * (rot_0 * rot_2));
+	Quaternion bone_one_quat = bone_one_trans.basis.get_rotation_quaternion();
+	Quaternion rot_0 = Quaternion(bone_one_quat.inverse().xform(axis_0).normalized(), (ac_ab_1 - ac_ab_0));
+	Quaternion rot_2 = Quaternion(bone_one_quat.inverse().xform(axis_1).normalized(), ac_at_0);
+	bone_one_trans.basis.set_quaternion(bone_one_quat * (rot_0 * rot_2));
 
 	stack->skeleton->update_bone_rest_forward_vector(joint_one_bone_idx);
 	bone_one_trans.basis.rotate_local(stack->skeleton->get_bone_axis_forward_vector(joint_one_bone_idx), joint_one_roll);
@@ -277,9 +277,9 @@ void SkeletonModification3DTwoBoneIK::execute(float delta) {
 		// alignment, and then apply it to the second joint.
 		float ba_bc_0 = Math::acos(CLAMP(bone_two_trans.origin.direction_to(bone_one_trans.origin).dot(bone_two_trans.origin.direction_to(bone_two_tip_trans.origin)), -1, 1));
 		float ba_bc_1 = Math::acos(CLAMP((sqr_three_length - sqr_one_length - sqr_two_length) / (-2.0 * joint_one_length * joint_two_length), -1, 1));
-		Quat bone_two_quat = bone_two_trans.basis.get_rotation_quat();
-		Quat rot_1 = Quat(bone_two_quat.inverse().xform(axis_0).normalized(), (ba_bc_1 - ba_bc_0));
-		bone_two_trans.basis.set_quat(bone_two_quat * rot_1);
+		Quaternion bone_two_quat = bone_two_trans.basis.get_rotation_quaternion();
+		Quaternion rot_1 = Quaternion(bone_two_quat.inverse().xform(axis_0).normalized(), (ba_bc_1 - ba_bc_0));
+		bone_two_trans.basis.set_quaternion(bone_two_quat * rot_1);
 
 		stack->skeleton->update_bone_rest_forward_vector(joint_two_bone_idx);
 		bone_two_trans.basis.rotate_local(stack->skeleton->get_bone_axis_forward_vector(joint_two_bone_idx), joint_two_roll);
