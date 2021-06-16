@@ -541,7 +541,10 @@ Array SurfaceTool::commit_to_arrays() {
 				for (uint32_t idx = 0; idx < vertex_array.size(); idx++) {
 					const Vertex &v = vertex_array[idx];
 
-					ERR_CONTINUE(v.bones.size() != count);
+					if (v.bones.size() > count) {
+						ERR_PRINT(vformat("Invalid bones size %s vs count %s", itos(v.bones.size()), itos(count)));
+						break;
+					}
 
 					for (int j = 0; j < count; j++) {
 						w[idx * count + j] = v.bones[j];
@@ -560,9 +563,10 @@ Array SurfaceTool::commit_to_arrays() {
 
 				for (uint32_t idx = 0; idx < vertex_array.size(); idx++) {
 					const Vertex &v = vertex_array[idx];
-
-					ERR_CONTINUE(v.weights.size() != count);
-
+					if (v.weights.size() > count) {
+						ERR_PRINT(vformat("Invalid weight size %s vs count %s", itos(v.weights.size()), itos(count)));
+						break;
+					}
 					for (int j = 0; j < count; j++) {
 						w[idx * count + j] = v.weights[j];
 					}
